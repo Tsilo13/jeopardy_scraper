@@ -99,20 +99,16 @@ for episode in episodes_json_array:
         if round_prefix == "J":
             round_name = "Jeopardy Round"
             category_list = single_categories
+            clue_value = Y * 200
         elif round_prefix == "DJ":
             round_name = "Double Jeopardy"
             category_list = double_categories
-        elif round_prefix == "FJ":
-            round_name = "Final Jeopardy"
-            category_list = final_category
+            clue_value = Y * 400
         else:
             continue
 
-        # Get the actual category name
-        if round_prefix == "FJ":
-            category = final_category[0]
-        else:
-            category = category_list[X - 1] if 1 <= X <= len(category_list) else "Unknown Category"
+        
+        category = category_list[X - 1] if 1 <= X <= len(category_list) else "Unknown Category"
 
 
         # Generate the corresponding answer ID
@@ -126,11 +122,31 @@ for episode in episodes_json_array:
 
         # Store the clue in game_data
         game_data[round_name][category].append({
-            "value": Y * 200 if round_prefix == "J" else (Y * 400 if round_prefix == "DJ" else "Final Jeopardy"),  
+            "value": clue_value, 
             "question": clue_text,
             "answer": answer
         })
 
+        final_jeopardy_clue = soup.find("td", id="clue_FJ")
+        if final_jeopardy_clue:
+            fj_text = final_jeopardy_clue.text.strip()
+
+            
+            fj_answer_tag = soup.find("td", id="clue_FJ_r")
+            fj_answer = fj_answer_tag.find("em", class_="correct_response").text.strip() if answer_tag else "No Answer"
+
+
+            fj_category = final_category[0] if final_category else "Final Jeopardy"
+
+            game_data["Final Jeopardy"][fj_category] = [{
+                "value": "Final Jeopardy",
+                "question": fj_text,
+                "answer": fj_answer
+            }]
+        else:
+            print("No final Jeopardy question found!")
+
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(game_data, f, indent=4)
-        print(f"Saved episode {episode["id"]} to {file_path}")
+        print(f"Saved episode {episode['id']} to {file_path}")
+    
