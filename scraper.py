@@ -38,7 +38,7 @@ for episode in episodes:
 
 for episode in episodes_json_array:
     episode_url = episode["URL"]
-    file_path = f"data/episode_{"id"}.json"
+    file_path = f"data/episode_{episode["id"]}.json"
     
     # make request before status check
     try:
@@ -51,10 +51,6 @@ for episode in episodes_json_array:
     if response.status_code != 200: # status check
         print(f"HTTP request unsuccessful for {episode_url}")
         continue # skips to next episode
-
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(episode_data, f, indent=4)
-        print(f"Saved episode {"id"} to {file_path}")
 
     soup = BeautifulSoup(response.content, "html.parser")  # Parse the HTML
 
@@ -81,6 +77,7 @@ for episode in episodes_json_array:
     for clue in soup.find_all("td", class_="clue_text"):
         clue_id = clue.get("id", "No ID")
         clue_text = clue.text.strip()
+        print(clue_text)
 
         # Parse clue ID to get category (X) and row index (Y)
         X, Y = parse_clue_id(clue_id)
@@ -105,3 +102,7 @@ for episode in episodes_json_array:
             "question": clue_text,
             "answer": answer
         })
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(game_data, f, indent=4)
+        print(f"Saved episode {episode["id"]} to {file_path}")
