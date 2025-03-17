@@ -1,3 +1,4 @@
+
 import requests  # For making HTTP requests
 from bs4 import BeautifulSoup  # For parsing HTML
 import json  # For storing scraped data
@@ -104,4 +105,3 @@ for episode in episodes_json_array:
             "question": clue_text,
             "answer": answer
         })
-
