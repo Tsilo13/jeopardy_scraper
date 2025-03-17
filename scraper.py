@@ -1,3 +1,4 @@
+
 import requests  # For making HTTP requests
 from bs4 import BeautifulSoup  # For parsing HTML
 import json  # For storing scraped data
@@ -51,9 +52,6 @@ for episode in episodes_json_array:
         print(f"HTTP request unsuccessful for {episode_url}")
         continue # skips to next episode
 
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(episode_data, f, indent=4)
-        print(f"Saved episode {"id"} to {file_path}")
 
     soup = BeautifulSoup(response.content, "html.parser")  # Parse the HTML
 
@@ -105,3 +103,6 @@ for episode in episodes_json_array:
             "answer": answer
         })
 
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(game_data, f, indent=4)
+        print(f"Saved episode {"id"} to {file_path}")
