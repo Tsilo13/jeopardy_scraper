@@ -38,7 +38,7 @@ for episode in episodes:
 
 for episode in episodes_json_array:
     episode_url = episode["URL"]
-    file_path = f"data/episode_{"id"}.json"
+    file_path = f"data/episode_{episode["id"]}.json"
     
     # make request before status check
     try:
@@ -65,44 +65,72 @@ for episode in episodes_json_array:
     clues = soup.find_all("td", class_="clue_text")
 
     # Initialize game_data
-    game_data = {"Jeopardy Round": {}}
+    game_data = {"Jeopardy Round": {},
+        "Double Jeopardy": {},
+        "Final Jeopardy": {}
+        }
 
     # Helper function to parse clue IDs
     def parse_clue_id(clue_id):
         parts = clue_id.split("_")
         if len(parts) < 4:
-            return None, None
-        return int(parts[2]), int(parts[3])  # Extract X (category) and Y (row)
+                return None, None, None
+
+        round_prefix = parts[1] # Round (J, DJ, or FJ)
+        X = int(parts[2]) # Cat
+        Y = int(parts[3]) # Value
+
+        return round_prefix, X, Y # Extract Round Prefix (J, DJ, FJ) X (category) and Y (row)
 
     # Loop through all clues
     for clue in soup.find_all("td", class_="clue_text"):
         clue_id = clue.get("id", "No ID")
+
+        if clue_id.endswith("_r"):
+             continue
+
         clue_text = clue.text.strip()
 
         # Parse clue ID to get category (X) and row index (Y)
-        X, Y = parse_clue_id(clue_id)
-        if X is None or Y is None:
+        round_prefix, X, Y = parse_clue_id(clue_id)
+        if round_prefix is None or X is None or Y is None:
             continue  # Skip invalid clues
 
+        if round_prefix == "J":
+            round_name = "Jeopardy Round"
+            category_list = single_categories
+        elif round_prefix == "DJ":
+            round_name = "Double Jeopardy"
+            category_list = double_categories
+        elif round_prefix == "FJ":
+            round_name = "Final Jeopardy"
+            category_list = final_category
+        else:
+            continue
+
         # Get the actual category name
-        category = single_categories[X - 1] if 1 <= X <= len(single_categories) else "Unknown Category"
+        if round_prefix == "FJ":
+            category = final_category[0]
+        else:
+            category = category_list[X - 1] if 1 <= X <= len(category_list) else "Unknown Category"
+
 
         # Generate the corresponding answer ID
-        answer_id = clue_id.replace("clue_", "clue_", 1) + "_r"
+        answer_id = clue_id + "_r"
         answer_tag = soup.find(id=answer_id)
         answer = answer_tag.find("em", class_="correct_response").text.strip() if answer_tag else "No Answer"
 
         # Ensure category exists in game_data
-        if category not in game_data["Jeopardy Round"]:
-            game_data["Jeopardy Round"][category] = []
+        if category not in game_data[round_name]:
+            game_data[round_name][category] = []
 
         # Store the clue in game_data
-        game_data["Jeopardy Round"][category].append({
-            "value": Y * 200,  # Convert row index to clue value
+        game_data[round_name][category].append({
+            "value": Y * 200 if round_prefix == "J" else (Y * 400 if round_prefix == "DJ" else "Final Jeopardy"),  
             "question": clue_text,
             "answer": answer
         })
 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(game_data, f, indent=4)
-        print(f"Saved episode {"id"} to {file_path}")
+        print(f"Saved episode {episode["id"]} to {file_path}")
