@@ -74,6 +74,6 @@ class DataProcessor:
             writer.writerows(data)#writes the rows
     #add function for writing and saving the csv files
     def save_all_csvs(self):
-        self.write_csv(self.games, "games.csv", ["game_id", "air_date", "season"])
-        self.write_csv(self.categories, "categories.csv", ["category_id", "game_id", "round_name", "category_name"])
-        self.write_csv(self.clues, "clues.csv", ["clue_id", "category_id", "game_id", "value", "clue_text", "correct_response"])
+        self.write_csv(self.games, "data/csv/games.csv", ["game_id", "air_date", "season"])
+        self.write_csv(self.categories, "data/csv/categories.csv", ["category_id", "game_id", "round_name", "category_name"])
+        self.write_csv(self.clues, "data/csv/clues.csv", ["clue_id", "category_id", "game_id", "value", "clue_text", "correct_response"])
