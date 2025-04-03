@@ -48,7 +48,7 @@ README.md # You're here
 ---
 ## Step 1: Scrape the Data
 To scrape Jeopardy! game data from the J! Archive and organize it into structured JSON:
-1. Step 1: Run the scraper script (make sure you're connected to the internet):
+1. Run the scraper script (make sure you're connected to the internet):
 --This will:
 ---Crawl the J! Archive episode list by season
 ----Save game data into individual episode JSON files (e.g., data/seasons/Season41/episode_9291.json)
@@ -58,6 +58,7 @@ To scrape Jeopardy! game data from the J! Archive and organize it into structure
 ----data/seasons.json — for metadata & file paths
 ## Step 2: Process and Export to CSV:
 Once all_data.json is generated, use the write_to_csv.py script to flatten and export the data into structured CSVs.
+1. Run the write_to_csv script
 -How It Works
 --The script uses a custom DataProcessor class (defined in processor.py) to:
 ---Extract and flatten nested game data
