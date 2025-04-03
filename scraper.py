@@ -241,26 +241,3 @@ with open("data/seasons.json", "w") as file:
 with open("data/all_data.json", "w") as file:
     json.dump(seasons_json_array_with_game_data, file, indent=4)
 
-
-## GET EPISODE OF SEASON
-seasons = []
-
-with open("data/seasons.json", "r") as file:
-    seasons = json.loads(file.read())
-
-print(seasons)
-
-name_to_search = "Season39"
-episode_filepath = ""
-for season in seasons:
-    if season["name"] != name_to_search:
-        continue
-
-    episode_filepath = season["episodes"][0]["file_path"]
-
-episode_tiles = []
-
-with open(episode_filepath, "r") as file:
-    episode_tiles = json.loads(file.read())
-
-print(episode_tiles)
