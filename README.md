@@ -75,6 +75,40 @@ Each file is ready for import into an Oracle database or use with R for analysis
 
 ## IMPORTANT! Make sure all_data.json exists before running this step.
 
+## Step 3: Set Up Oracle XE:
 
+This project uses Oracle DB, if you dont already have a local or cloud SQL db set up, I recomend Oracle XE. Install and follow the instructions on Oracle's website for guidance.
 
+-To connect to the Oracle XE database without exposing credentials, this project uses environment variables and the python-dotenv package.
+-Create a .env file in your project root with your Oracle credentials:
+
+ORACLE_USER=jeopardy_user
+ORACLE_PASS=YourSecurePassword
+ORACLE_DSN=localhost/XEPDB1
+
+# note: XEPDB1 is the default "pluggable database" name in Oracle XE.
+
+When you connect to Oracle with cx_Oracle, you have to specify:
+"username/password@host/service_name"
+The service_name here is XEPDB1, which tells Oracle:
+"Connect me to that specific pluggable database."
+If you used a different Oracle edition or made a custom pluggable DB, you'd use that name instead.
+
+-Be sure to add .env to your .gitignore to avoid exposing secrets in version control.
+
+# Running the Script in VSCode with WSL: If you're using VSCode with a WSL terminal, you might need to run your insert_data.py script from Windows command prompt instead of the WSL terminal. Alternatively, you may need to install Oracle for Linux if you're running the script from a Linux environment.
+
+https://oracle.github.io/python-oracledb/
+for information on the oracledb driver
+
+## Step 4: Insert data
+
+You should be able to run the script as is, assuming you have properly installed and connected to you local database. 
+
+# What this does: 
+-Loads the CSVs into a pandas dataframe
+-df.to_dict(orient='records') converts each row in the DataFrame into a dictionary, where the column names are the keys.
+
+    -This is useful because executemany() expects a list of dictionaries, where each dictionary contains values to be inserted into the database, with the keys matching the placeholders in your SQL query.
+    
 

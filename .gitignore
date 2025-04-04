@@ -5,3 +5,5 @@ data/
 
 notebook_pasted.py 
 notebook.ipynb
+.env
+libaio1_0.3.112-9_amd64.deb
