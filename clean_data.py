@@ -2,6 +2,13 @@ import pandas as pd
 from functools import wraps
 import logging
 
+logging.basicConfig(
+    filename='data_cleaning.log',
+    filemode='a',
+    level=logging.INFO,
+    format='[%(asctime)s] %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 logger = logging.getLogger(__name__)
 
 def validate_dataframe(required_columns, unique_columns=None):
@@ -64,17 +71,28 @@ def clean_clues_df(df):
         df[col] = df[col].astype(str).str.strip() 
     return df
 
-def load_and_clean_all():
+def main():
+    logger.info("Reading Data")
     games = pd.read_csv('data/csv/games.csv')
     categories = pd.read_csv('data/csv/categories.csv')
     clues = pd.read_csv('data/csv/clues.csv')
 
+    logger.info("Cleaning...")
+    clean_games = clean_games_df(games)
+    clean_categories = clean_categories_df(categories)
+    clean_clues = clean_clues_df(clues)
 
-    return (
-            clean_games_df(games),
-            clean_categories_df(categories),
-            clean_clues_df(clues)
-        )
+    logger.info("Saving cleaned data")
+    clean_games.to_csv('data/csv/clean_games.csv', index=False, encoding="utf-8")
+    clean_categories.to_csv('data/csv/clean_categories.csv', index=False, encoding="utf-8")
+    clean_clues.to_csv('data/csv/clean_clues.csv', index=False, encoding="utf-8")
+
+    logger.info("Data has been successfully cleaned and saved!")
+    
+
+
+if __name__ == '__main__':
+    main()
     
     
 
