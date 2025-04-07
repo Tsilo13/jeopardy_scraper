@@ -36,8 +36,8 @@ def validate_dataframe(required_columns, unique_columns=None):
     unique_columns=['game_id']
     )
 def clean_games_df(df):
-    df['game_id'] = df['game_id'].astype(int)
-    df['air_date'] = pd.to_datetime(df['air_date'], errors='coerce')
+    df['air_date'] = pd.to_datetime(df['air_date'], errors='coerce').dt.date
+    print(df['air_date'].apply(type).unique())
     null_dates = df[df['air_date'].isna()]
     for game_id in null_dates['game_id']:
         logger.info(f"clean_games_df: Dropped game_id: {game_id} with null 'air_date'")
@@ -50,8 +50,6 @@ def clean_games_df(df):
     )
 def clean_categories_df(df):
     df = df.fillna('')
-    df['category_id'] = df['category_id'].astype(int)
-    df['game_id'] = df['game_id'].astype(int)
     df['round_name'] = df['round_name'].str.strip()
     df['category_name'] = df['category_name'].str.strip()
     return df
@@ -62,13 +60,16 @@ def clean_categories_df(df):
     )
 def clean_clues_df(df):
     df = df.fillna('')
-    df['clue_id'] = df['clue_id'].astype(int)
-    df['category_id'] = df['category_id'].astype(int)
-    df['game_id'] = df['game_id'].astype(int)
     # just convert all clue values to str, considering values are fixed 
     # to accomodate final jeopardy
     for col in ['value', 'clue_text', 'correct_response']:
-        df[col] = df[col].astype(str).str.strip() 
+        df[col] = df[col].fillna('').astype(str).str.strip()
+        bad_rows = df[~df[col].apply(lambda x: isinstance(x, str))]
+        if not bad_rows.empty:
+            print(f"Bad rows in column '{col}':")
+            print(bad_rows[[col]]) 
+        
+
     return df
 
 def main():

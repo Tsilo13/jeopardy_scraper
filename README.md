@@ -63,6 +63,16 @@ Once all_data.json is generated, use the write_to_csv.py script to flatten and e
 --The script uses a custom DataProcessor class (defined in processor.py) to:
 ---Extract and flatten nested game data
 ---Assign unique IDs using MD5 hashing for categories and clues
+## Note: 
+    -we initially used category_id and clue text to generate unique hashes for clue ids.
+    however we found that jeopardy reuses clue text in some categories
+    *see: Show #8674 - Thursday, June 30, 2022, **"STAN" COUNTRIES** for $800 and $1000 respectively.
+    we encountered 404 hash collisions with this logic. we revised the logic to generate hashes off of 
+    an enumerated unique value.
+    -there were several reasons why we had to add enumeration to the clues to give them uniqueness:
+        -there were boards and categories where clues were blank
+        -reused categories and boards
+        -combinations of these factors led to a minimum of 118 colliding md5 hash ids 
 ---Normalize the data into three lists: games, categories, and clues
 ---Export these lists into relational CSVs inside data/csv/
 

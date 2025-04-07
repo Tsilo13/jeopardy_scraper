@@ -17,15 +17,25 @@ except oracledb.DatabaseError as e:
     print("Connection failed:", e)
 
 # load the CSVs into pandas dataframes
-games_df = pd.read_csv('data/csv/games.csv')
-categories_df = pd.read_csv('data/csv/categories.csv')
-clues_df = pd.read_csv('data/csv/clues.csv')
+games_df = pd.read_csv('data/csv/clean_games.csv')
+#make sure the air date stays a datetime object when reloading the csv
+games_df['air_date'] = pd.to_datetime(games_df['air_date'], errors='coerce').dt.date
+categories_df = pd.read_csv('data/csv/clean_categories.csv')
+clues_df = pd.read_csv('data/csv/clean_clues.csv')
 
+# Cleaning (again, even if it's from cleaned CSV)
+for col in ['value', 'clue_text', 'correct_response']:
+    clues_df[col] = clues_df[col].fillna('').astype(str).str.strip()
 
 # now lets convert each DF into lists of dicts
 games_data = games_df.to_dict(orient='records')
 categories_data = categories_df.to_dict(orient='records')
 clues_data = clues_df.to_dict(orient='records')
+
+
+print(type(clues_data))
+print(type(clues_data[0]))
+
 
 # create the cursor object for executing SQL statements
 cursor = conn.cursor()
