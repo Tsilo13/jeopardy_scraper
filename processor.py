@@ -57,8 +57,8 @@ class DataProcessor:
                     })
 
                     # move to clue data
-                    for clue in clues:
-                        clue_id = self.hash_md5(f"{category_id}{clue['question']}")
+                    for i, clue in enumerate(clues):
+                        clue_id = self.hash_md5(f"{game_id}_{round_name}_{category_name}_{clue['value']}_{i}")
                         self.clues.append({
                             "clue_id": clue_id, #pk
                             "category_id": category_id, #fk
