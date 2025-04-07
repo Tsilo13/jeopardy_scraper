@@ -21,6 +21,7 @@ games_df = pd.read_csv('data/csv/games.csv')
 categories_df = pd.read_csv('data/csv/categories.csv')
 clues_df = pd.read_csv('data/csv/clues.csv')
 
+
 # now lets convert each DF into lists of dicts
 games_data = games_df.to_dict(orient='records')
 categories_data = categories_df.to_dict(orient='records')
