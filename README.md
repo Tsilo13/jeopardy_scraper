@@ -37,12 +37,26 @@ The processed data is modeled as three normalized tables:
 
 ## Project Structure
 
-data/ ├── all_data.json # All game data combined ├── seasons.json # Season/episode metadata ├── seasons/└──episode#.json
-└── csv/ ├── games.csv ├── categories.csv |── clues.csv 
-scraper.py # Scrapes J! Archive for jeaopardy data and stores it in vraious json structures in data folder 
-processor.py # DataProcessor class (cleans + exports) 
-write_to_csv.py # Script to create CSVs from all_data.json 
-README.md # You're here
+data/
+├── all_data.json         # Combined game data
+├── seasons.json          # Metadata index of seasons
+├── seasons/              # Raw scraped episodes by season
+└── csv/
+    ├── games.csv
+    ├── categories.csv
+    ├── clues.csv
+    ├── clean_games.csv
+    ├── clean_categories.csv
+    └── clean_clues.csv
+
+scripts/
+├── scraper.py            # Scrapes J! Archive to JSON
+├── processor.py          # Flattens JSON into relational format
+├── write_to_csv.py       # Outputs raw CSVs
+├── clean_data.py         # Validates and cleans data
+├── insert_data.py        # Inserts into Oracle DB
+└── .env                  # (not tracked) Oracle credentials
+
 
 
 ---
@@ -117,8 +131,24 @@ You should be able to run the script as is, assuming you have properly installed
 
 # What this does: 
 -Loads the CSVs into a pandas dataframe
+-does some last minute cleaning 
 -df.to_dict(orient='records') converts each row in the DataFrame into a dictionary, where the column names are the keys.
-
     -This is useful because executemany() expects a list of dictionaries, where each dictionary contains values to be inserted into the database, with the keys matching the placeholders in your SQL query.
-    
+
+Execute bulk inserts into Oracle using cursor.executemany()
+
+Commit and close the connection
+
+The script assumes that your database schema already exists with matching tables.
+
+## Bonus: Validation & Logging
+The project includes robust defensive programming features:
+
+-Uniqueness checks on IDs to prevent silent data corruption
+
+-Logging for dropped records, conflicts, and type issues
+
+-Automatic null-handling and string standardization for Oracle compatibility
+
+-Tested against 500k+ clue entries, ensuring stable long-term performance
 
