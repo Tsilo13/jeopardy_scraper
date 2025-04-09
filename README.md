@@ -152,3 +152,124 @@ The project includes robust defensive programming features:
 
 -Tested against 500k+ clue entries, ensuring stable long-term performance
 
+# Jeopardy Category Theme Analysis (R Project)
+
+This project uses an Oracle-based Jeopardy database to explore and visualize recurring category themes across seasons. It generates two primary outputs:
+
+1. **Word Cloud** of the most common category terms
+2. **Bar Chart Race** showing how popular category themes evolve over time
+
+---
+
+## Outputs
+
+### 1. Word Cloud
+- Generated using [`wordcloud2`](https://cran.r-project.org/web/packages/wordcloud2/)
+- Saved as an **HTML widget** (PNG exportable)
+
+**File:**  
+data/theme_wordcloud.html
+
+pgsql
+Copy
+Edit
+
+### 2. Bar Chart Race (Wide Format CSV)
+- Each row represents a season (by air date of first episode)
+- Each column is a frequent category word
+- Cell values = number of times the word appears in that season’s category titles
+
+**File:**  
+data/seasonal_charts/theme_word_race_wide.csv
+
+yaml
+Copy
+Edit
+
+> **NOTE:** Some bar chart race tools like Flourish or AlienArt may require you to **swap the axis** (transpose rows and columns) before importing this CSV.
+
+---
+
+## 🔧 Setup Instructions
+
+### 1. Set Working Directory
+
+Update your working directory to the root of your local project:
+```r
+setwd("~/jeopardy_scraper")  # Update this path as needed
+2. Install Required R Packages
+Install the following packages before running the script:
+
+r
+Copy
+Edit
+install.packages(c(
+  "DBI", "odbc", "dplyr", "tidytext", "ggplot2", 
+  "wordcloud2", "stringr", "forcats", 
+  "htmlwidgets", "tidyr", "lubridate"
+))
+3. Set Secure Oracle Environment Variables
+You must provide your Oracle credentials securely via environment variables.
+
+Option A – In your R session:
+
+r
+Copy
+Edit
+Sys.setenv(ORACLE_USER = "your_username")
+Sys.setenv(ORACLE_PASS = "your_password")
+Sys.setenv(ORACLE_DSN  = "your_dsn_name")
+Option B – In a .Renviron file: Add this to your ~/.Renviron file:
+
+ini
+Copy
+Edit
+ORACLE_USER=your_username
+ORACLE_PASS=your_password
+ORACLE_DSN=your_dsn_name
+Restart RStudio after editing .Renviron.
+
+#Visualizations
+Word Cloud
+Automatically generated using the top 150 most frequent category words
+
+Filters out stop words like "the", "of", etc.
+
+Font used: Korinna (Jeopardy-style) — must be installed on your system
+
+To export a PNG:
+
+Open the theme_wordcloud.html in your browser
+
+Take a screenshot or export using browser tools or widget functions
+
+Bar Chart Race
+Produces a wide-format CSV file
+
+Use in Flourish, AlienArt, or similar web animation tools
+
+Includes proper date formatting for smooth timeline animation
+
+Can be styled with captions in your web platform of choice (e.g. Canva + Flourish)
+
+#Folder Structure
+cpp
+Copy
+Edit
+jeopardy_scraper/
+├── data/
+│   ├── csv/
+│   │   └── theme_frequency.csv
+│   └── seasonal_charts/
+│       ├── theme_word_race_wide.csv
+│       └── theme_word_race_long.csv (optional, not generated here)
+├── theme_wordcloud.html
+├── theme_word_analysis.R
+└── README.md
+
+# Final Notes
+Ensure that Korinna is installed on your system for best word cloud appearance
+
+Bar chart race tools may have strict formatting requirements; test a few rows first
+
+This project is a great foundation for deeper theme-based analysis of Jeopardy data
