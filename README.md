@@ -2,7 +2,6 @@
 
 This project scrapes and processes Jeopardy! game data from [J! Archive](https://j-archive.com), structures it into relational form, and prepares it for database and analytics work. The primary focus is on data wrangling with Python, exporting to CSV, and setting up for SQL + R-based analysis.
 
-Transparency: this readme was created with the assistance of and AI LLM (chatgpt)
 
 ---
 
