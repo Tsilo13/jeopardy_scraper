@@ -21,7 +21,7 @@ The processed data is modeled as three normalized tables:
 |--------------|------------|------------------------------|
 | category_id  | string PK  | Hashed from game+round+name  |
 | game_id      | string FK  | References `games.game_id`   |
-| round_name   | string     | "Jeopardy Round", etc.       |
+| round_name   | string     | "Double Jeopardy", etc.       |
 | category_name| string     | The category title           |
 
 ### `clues`
