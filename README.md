@@ -196,7 +196,7 @@ Edit
 ### 1. Set Working Directory
 
 Update your working directory to the root of your local project:
-```r
+
 setwd("~/jeopardy_scraper")  # Update this path as needed
 2. Install Required R Packages
 Install the following packages before running the script:
