@@ -105,6 +105,44 @@ write.csv(wide_format, "data/seasonal_charts/theme_word_race_wide.csv", row.name
 #NOTE: you may need to swap the axis of the csv when you use a web app program 
 #to make bar chart race
 
+#---------------------------------------------------------
+#         Most Common Correct Responses (Top 25)
+#---------------------------------------------------------
+
+# Pull correct responses from the CLUES table
+top_responses_raw <- dbGetQuery(con, "
+  SELECT TO_CHAR(CORRECT_RESPONSE) AS response,
+         COUNT(*) AS frequency
+  FROM CLUES
+  WHERE CORRECT_RESPONSE IS NOT NULL
+  GROUP BY TO_CHAR(CORRECT_RESPONSE)
+  HAVING COUNT(*) > 1
+  ORDER BY frequency DESC
+  FETCH FIRST 25 ROWS ONLY
+")
+
+# Remove unwanted entries (like "=")
+top_responses <- top_responses_raw %>%
+  filter(RESPONSE != "=")
+
+# Plot
+library(ggplot2)
+library(forcats)
+library(showtext)
+
+ggplot(top_responses, aes(x = fct_reorder(RESPONSE, FREQUENCY), y = FREQUENCY)) +
+  geom_bar(stat = "identity", fill = "#2b8cbe") +
+  coord_flip() +
+  labs(
+    title = "Top 25 Most Common Jeopardy Responses (Excluding '=')",
+    x = "Correct Response",
+    y = "Frequency"
+  ) +
+  theme_minimal(base_size = 13)
+
+ggsave("data/top_jeopardy_responses_cleaned.png", width = 10, height = 6, dpi = 300)
+
+
 #disconnect
 dbDisconnect(con)
 
