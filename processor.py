@@ -24,6 +24,8 @@ class DataProcessor:
 
     # now make a hash helper fnction for generating unique IDs
     def hash_md5(self, string):
+        #.encode() defaults to UTF-8 encoding
+        #.hexdigest() to return as string object containing only hexadecimal digits
         return hashlib.md5(string.encode()).hexdigest() 
 
     def process(self, all_data):
