@@ -31,8 +31,8 @@ The processed data is modeled as three normalized tables:
 | category_id      | string FK  | References `categories.category_id` |
 | game_id          | string FK  | Redundant for easier joins       |
 | value            | number     | Dollar amount of clue            |
-| clue_text        | string     | The Jeopardy-style clue text     |
-| correct_response | string     | The correct answer               |
+| clue_text        | clob       | The Jeopardy-style clue text     |
+| correct_response | clob       | The correct answer               |
 
 ---
 
